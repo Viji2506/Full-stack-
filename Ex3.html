@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GK Quiz</title>
+
+<!-- jQuery CDN -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#eef2f7;
+}
+.container{
+    width:420px;
+    margin:100px auto;
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 6px 12px rgba(0,0,0,0.1);
+}
+h2,h3{
+    text-align:center;
+}
+button{
+    padding:8px 15px;
+    margin-top:15px;
+}
+#options{
+    margin-top:10px;
+}
+.hide{
+    display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container" id="startPage">
+  <h2>🧠 General Knowledge Quiz</h2>
+  <p style="text-align:center;">10 Questions • Test your GK</p>
+  <center>
+    <button id="startQuiz">Start Quiz</button>
+  </center>
+</div>
+
+<div class="container hide" id="quizPage">
+  <h3 id="question"></h3>
+  <div id="options"></div>
+
+  <button id="prev">Previous</button>
+  <button id="next">Next</button>
+</div>
+
+<script>
+$(document).ready(function(){
+
+  var quiz = [
+    {q:"Capital of India?", options:["Mumbai","New Delhi","Chennai"], ans:1},
+    {q:"National animal of India?", options:["Lion","Elephant","Tiger"], ans:2},
+    {q:"Largest planet?", options:["Earth","Jupiter","Mars"], ans:1},
+    {q:"Father of Computer?", options:["Charles Babbage","Einstein","Newton"], ans:0},
+    {q:"Fastest land animal?", options:["Tiger","Cheetah","Leopard"], ans:1},
+    {q:"Red Planet?", options:["Mars","Venus","Saturn"], ans:0},
+    {q:"Currency of Japan?", options:["Yen","Won","Dollar"], ans:0},
+    {q:"Largest ocean?", options:["Atlantic","Indian","Pacific"], ans:2},
+    {q:"National flower of India?", options:["Rose","Lotus","Lily"], ans:1},
+    {q:"Who wrote Ramayana?", options:["Valmiki","Ved Vyasa","Kalidasa"], ans:0}
+  ];
+
+  var index = 0;
+  var score = 0;
+  var selected = [];
+
+  $("#startQuiz").click(function(){
+    $("#startPage").hide();
+    $("#quizPage").show();
+    loadQuestion();
+  });
+
+  function loadQuestion(){
+    $("#question").text((index+1)+". "+quiz[index].q);
+    $("#options").empty();
+
+    $.each(quiz[index].options,function(i,opt){
+      $("#options").append(
+        `<input type="radio" name="opt" value="${i}"> ${opt}<br>`
+      );
+    });
+
+    if(selected[index] !== undefined){
+      $(`input[value=${selected[index]}]`).prop("checked",true);
+    }
+  }
+
+  $("#next").click(function(){
+    var val = $("input[name='opt']:checked").val();
+    if(val == undefined){
+      alert("Please select an answer");
+      return;
+    }
+
+    if(selected[index] === undefined && val == quiz[index].ans){
+      score++;
+    }
+
+    selected[index] = val;
+    index++;
+
+    if(index < quiz.length){
+      loadQuestion();
+    }else{
+      $("#quizPage").html(
+        `<h2>Quiz Completed 🎉</h2>
+         <p style="text-align:center;">Score: ${score} / ${quiz.length}</p>
+         <center><button onclick="location.reload()">Restart</button></center>`
+      );
+    }
+  });
+
+  $("#prev").click(function(){
+    if(index > 0){
+      index--;
+      loadQuestion();
+    }
+  });
+
+});
+</script>
+
+</body>
+</html>
